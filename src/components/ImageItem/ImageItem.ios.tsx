@@ -141,6 +141,9 @@ const ImageItem = ({
         >
           <Animated.Image
             source={imageSrc}
+            imageStyle={{
+               resizeMode: 'contain',
+             }}
             style={imageStylesWithOpacity}
             onLoad={() => setLoaded(true)}
           />

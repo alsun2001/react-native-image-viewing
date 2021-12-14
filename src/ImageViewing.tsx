@@ -140,16 +140,18 @@ function ImageViewing({
             index,
           })}
           renderItem={({ item: imageSrc }) => (
-            <ImageItem
-              onZoom={onZoom}
-              imageSrc={imageSrc}
-              imageStyle={imagesStyle}
-              onRequestClose={onRequestCloseEnhanced}
-              onLongPress={onLongPress}
-              delayLongPress={delayLongPress}
-              swipeToCloseEnabled={swipeToCloseEnabled}
-              doubleTapToZoomEnabled={doubleTapToZoomEnabled}
-            />
+            <View style={styles.imageItemContainer}>
+              <ImageItem
+                onZoom={onZoom}
+                imageSrc={imageSrc}
+                imageStyle={imagesStyle}
+                onRequestClose={onRequestCloseEnhanced}
+                onLongPress={onLongPress}
+                delayLongPress={delayLongPress}
+                swipeToCloseEnabled={swipeToCloseEnabled}
+                doubleTapToZoomEnabled={doubleTapToZoomEnabled}
+              />
+            </View>
           )}
           onMomentumScrollEnd={onScroll}
           //@ts-ignore
@@ -185,6 +187,10 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: 1,
     bottom: 0,
+  },
+  imageItemContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
