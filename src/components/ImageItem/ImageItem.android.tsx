@@ -6,14 +6,17 @@
  *
  */
 
-import React, { useState, useCallback } from "react";
+import React, { useCallback, useRef, useState } from "react";
 
 import {
   Animated,
+  ScrollView,
   Dimensions,
   StyleSheet,
+  ImageStyle,
   NativeScrollEvent,
-  NativeSyntheticEvent, ImageStyle,
+  NativeSyntheticEvent,
+  NativeMethodsMixin,
 } from 'react-native';
 
 import useImageDimensions from "../../hooks/useImageDimensions";
@@ -50,22 +53,24 @@ const ImageItem = ({
   swipeToCloseEnabled = true,
   doubleTapToZoomEnabled = true,
 }: Props) => {
-  const imageContainer = React.createRef<any>();
+  const imageContainer = useRef<ScrollView & NativeMethodsMixin>(null);
   const imageDimensions = useImageDimensions(imageSrc);
   const [translate, scale] = getImageTransform(imageDimensions, SCREEN);
   const scrollValueY = new Animated.Value(0);
   const [isLoaded, setLoadEnd] = useState(false);
 
   const onLoaded = useCallback(() => setLoadEnd(true), []);
-  const onZoomPerformed = (isZoomed: boolean) => {
-    onZoom(isZoomed);
-    if (imageContainer?.current) {
-      // @ts-ignore
-      imageContainer.current.setNativeProps({
-        scrollEnabled: !isZoomed,
-      });
-    }
-  };
+  const onZoomPerformed = useCallback(
+    (isZoomed: boolean) => {
+      onZoom(isZoomed);
+      if (imageContainer?.current) {
+        imageContainer.current.setNativeProps({
+          scrollEnabled: !isZoomed,
+        });
+      }
+    },
+    [imageContainer]
+  );
 
   const onLongPressHandler = useCallback(() => {
     onLongPress(imageSrc);
@@ -115,7 +120,7 @@ const ImageItem = ({
   };
 
   return (
-    <Animated.ScrollView
+    <ScrollView
       ref={imageContainer}
       style={styles.listItem}
       pagingEnabled
@@ -136,7 +141,7 @@ const ImageItem = ({
         onLoad={onLoaded}
       />
       {(!isLoaded || !imageDimensions) && <ImageLoading />}
-    </Animated.ScrollView>
+    </ScrollView>
   );
 };
 
