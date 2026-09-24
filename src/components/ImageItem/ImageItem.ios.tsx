@@ -28,7 +28,10 @@ import { ImageSource } from "../../@types";
 import { ImageLoading } from "./ImageLoading";
 
 const SWIPE_CLOSE_OFFSET = 75;
-const SWIPE_CLOSE_VELOCITY = 1.55;
+const SWIPE_CLOSE_VELOCITY = 0.5;
+// Compared against the scroll view's rubber-band contentOffset, which is
+// damped to roughly half the finger travel, so this is ~90pt of actual drag.
+const SWIPE_CLOSE_DISTANCE = 45;
 const SCREEN = Dimensions.get("screen");
 const SCREEN_WIDTH = SCREEN.width;
 const SCREEN_HEIGHT = SCREEN.height;
@@ -80,6 +83,7 @@ const ImageItem = ({
   const onScrollEndDrag = useCallback(
     ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
       const velocityY = nativeEvent?.velocity?.y ?? 0;
+      const offsetY = nativeEvent?.contentOffset?.y ?? 0;
       const scaled = nativeEvent?.zoomScale > 1;
 
       onZoom(scaled);
@@ -88,12 +92,13 @@ const ImageItem = ({
       if (
         !scaled &&
         swipeToCloseEnabled &&
-        Math.abs(velocityY) > SWIPE_CLOSE_VELOCITY
+        (Math.abs(velocityY) > SWIPE_CLOSE_VELOCITY ||
+          Math.abs(offsetY) > SWIPE_CLOSE_DISTANCE)
       ) {
         onRequestClose();
       }
     },
-    [scaled]
+    [scaled, swipeToCloseEnabled, onZoom, onRequestClose]
   );
 
   const onScroll = ({

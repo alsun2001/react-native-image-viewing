@@ -24,7 +24,8 @@ import { ImageSource } from "../../@types";
 import { ImageLoading } from "./ImageLoading";
 
 const SWIPE_CLOSE_OFFSET = 75;
-const SWIPE_CLOSE_VELOCITY = 1.75;
+const SWIPE_CLOSE_VELOCITY = 0.5;
+const SWIPE_CLOSE_DISTANCE = 90;
 const SCREEN = Dimensions.get("window");
 const SCREEN_WIDTH = SCREEN.width;
 const SCREEN_HEIGHT = SCREEN.height;
@@ -100,7 +101,7 @@ const ImageItem = ({
     if (
       (Math.abs(velocityY) > SWIPE_CLOSE_VELOCITY &&
         offsetY > SWIPE_CLOSE_OFFSET) ||
-      offsetY > SCREEN_HEIGHT / 2
+      offsetY > SWIPE_CLOSE_DISTANCE
     ) {
       onRequestClose();
     }
